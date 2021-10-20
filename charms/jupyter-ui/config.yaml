@@ -11,7 +11,20 @@ options:
     type: string
     default: /jupyter
     description: URL prefix for HTTP requests
-  dev-mode:
+  backend-mode:
+    type: string
+    default: development
+    description: Which mode out of `development` or `production` the backend server should use
+  secure-cookies:
     type: boolean
-    default: true
-    description: If true, deactives SubjectAccessReview checks
+    default: false
+    description: Whether cookies should require HTTPS
+  default_notebook_lists:
+    type: string
+    default: "default"
+    description: |
+      Comma separated list of available jupyter notebook urls. The default list is the following:
+      - gcr.io/kubeflow-images-public/tensorflow-1.15.2-notebook-cpu:1.0.0
+      - gcr.io/kubeflow-images-public/tensorflow-1.15.2-notebook-gpu:1.0.0
+      - gcr.io/kubeflow-images-public/tensorflow-2.1.0-notebook-cpu:1.0.0
+      - gcr.io/kubeflow-images-public/tensorflow-2.1.0-notebook-gpu:1.0.0
