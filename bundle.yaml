@@ -1,3 +1,4 @@
+name: jupyter
 bundle: kubernetes
 applications:
   jupyter-controller:
