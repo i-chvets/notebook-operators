@@ -12,13 +12,13 @@ See [#Usage] for more details on each tool.
 
 ## Image Definitions
 
-Image definitions contain copies of selected sources from upstream. These differ from one repository to the next. Scripts should be updated accordingly. In addtion, it is a good practice to update this README file with what repositories are tracked.
+Image definitions contain patch files for selected sources from upstream. These differ from one repository to the next. Scripts should be updated accordingly. In addtion, it is a good practice to update this README file with what repositories are tracked.
 
 ### Kubeflow
 
-`setup.sh` contains a list of container images that are maintained in this repository from Kubeflow upstream repository (https://github.com/kubeflow/kubeflow.git). Sources for those images are located in `./kubeflow/` directory.
+`setup.sh` contains a list of container images that are maintained in this repository from Kubeflow upstream repository (https://github.com/kubeflow/kubeflow.git). Sources for those images are checkeout (sparse) into `./kubeflow/` directory.
 
-Additional resources are also located in this repository such as `base` and `common`. For detailed resources that these images require refer to `setup.sh` script.
+For detailed resources that these images require refer to `setup.sh` script.
 
 There were modification done to `Makefile(s)` and `Dockerfiles(s)` to ensure bulding only required images.
 
@@ -52,7 +52,7 @@ Initial setup of image definitions was already peformed. If required, initial se
 setup.sh .
 ```
 
-This will create image definitions in current (`.`) directory. Refer to `setup.sh` script for more detail on what directories are created. In addition, `kubeflow/version.txt` is created to track version.
+This will checkout requires source in current (`.`) directory. Refer to `setup.sh` script for more detail on what directories are created.
 
 ### Build
 
@@ -112,14 +112,15 @@ In many cases only single image should be published. In such cases perform publi
 
 ### Maintenance
 
-From time to time an update in upstream source, an addition of new container image, or a new vulnerability fix will require re-evaluation of image definitions. To perform difference analysis between upstream, set up a clean copy of upstream source in temporary directory and diff the contents with current image definitions.
+From time to time an update in upstream source, an addition of new container image, or a new vulnerability fix will require re-evaluation of image definitions. To perform difference analysis between upstream, set up a clean copy of upstream source, apply patch and diff the contents with current image definitions.
 
 For Kubeflow:
 
 ```
-mkdir ./update
-setup.sh ./update
-diff -r ./update/kubeflow kubeflow
+setup.sh .
+patch -R -p0 < update.patch
+cd kubeflow 
+git diff
 ```
 
 Analyze differences and act accordingly, i.e. change `Makefiles` and/or `Dockerfile(s)`, add, remove, or modify image definitions in this repository.
@@ -131,6 +132,12 @@ This is a manual merge process. No automation can be done at this point.
 Whenever making changes to image definitions include meaninful commit message that explains why changes were made.
 
 Changes to the scripts might be required if Makefiles have changed.
+
+Create new patch if required:
+
+```
+git diff -aur kubeflow > update.patch
+```
 
 To clean up all Docker images creared during build process:
 
